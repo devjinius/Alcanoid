@@ -1,0 +1,7 @@
+#Sat Feb 04 16:13:25 KST 2017
+base.0=C\:\\android_workspace\\MyApplication\\alcanoid\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\10\\instant-run_805a5fad233cfa664e9724f1ad17eeefa7e7a449
+renamed.1=classes.dex
+renamed.0=classes2.dex
+file.1=C\:\\android_workspace\\MyApplication\\alcanoid\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\10\\instant-run-bootstrap_cbe443c6e659f0ec1725a9f913e66bcd2571d137\\classes.dex
+base.1=C\:\\android_workspace\\MyApplication\\alcanoid\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\10\\instant-run-bootstrap_cbe443c6e659f0ec1725a9f913e66bcd2571d137
+file.0=C\:\\android_workspace\\MyApplication\\alcanoid\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\10\\instant-run_805a5fad233cfa664e9724f1ad17eeefa7e7a449\\classes.dex
