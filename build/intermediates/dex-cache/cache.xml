@@ -3,75 +3,21 @@
 
     <item
         is-multidex="true"
-        jar="C:\android_workspace\MyApplication\alcanoid\build\intermediates\exploded-aar\com.android.support\support-core-utils\25.1.0\jars\classes.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="25.0.2"
-        sha1="0a0ef86b7fa568a52bf6214a0326ca1f1d618da7">
-        <dex dex="C:\android_workspace\MyApplication\alcanoid\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-core-utils-25.1.0_4f7c4666008975407178f11a24688866eb6ed673\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="C:\android_workspace\MyApplication\alcanoid\build\intermediates\incremental-classes\debug\instant-run-bootstrap.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="25.0.2"
-        sha1="1384715fd835e0096eac334ef9fa28047ba0cf80">
-        <dex dex="C:\android_workspace\MyApplication\alcanoid\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run-bootstrap_cbe443c6e659f0ec1725a9f913e66bcd2571d137\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="C:\android_workspace\MyApplication\alcanoid\build\intermediates\exploded-aar\com.android.support\recyclerview-v7\25.1.0\jars\classes.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="25.0.2"
-        sha1="b266c8faa5af72e579b9da36ef35053ffed6ac64">
-        <dex dex="C:\android_workspace\MyApplication\alcanoid\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-recyclerview-v7-25.1.0_dd219a958b55c46ef9b25d1a2fcbfd97a0636478\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="C:\android_workspace\MyApplication\alcanoid\build\intermediates\exploded-aar\com.android.support\transition\25.1.0\jars\classes.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="25.0.2"
-        sha1="d38084015027549951cbaea5d5f6fb795cc81151">
-        <dex dex="C:\android_workspace\MyApplication\alcanoid\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-transition-25.1.0_41a3f9d75bcca9ccf8b748d9b539b9f720be1584\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="C:\Users\samsung\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\25.1.0\support-annotations-25.1.0.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="25.0.2"
-        sha1="64cb6b229a8bdfd907bc8dd46839a0053e4c018d">
-        <dex dex="C:\android_workspace\MyApplication\alcanoid\build\intermediates\transforms\dex\debug\folders\1000\10\support-annotations-25.1.0_777c4ac9f76497c03a2c285dd4182d3ed5531a35\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="C:\android_workspace\MyApplication\alcanoid\build\intermediates\incremental-runtime-classes\debug\instant-run.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="25.0.2"
-        sha1="d41c2fb8a3a15ba168c4448cca38e28c32ae7ce3">
-        <dex dex="C:\android_workspace\MyApplication\alcanoid\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run_805a5fad233cfa664e9724f1ad17eeefa7e7a449\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="C:\android_workspace\MyApplication\alcanoid\build\intermediates\exploded-aar\com.android.support\appcompat-v7\25.1.0\jars\classes.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="25.0.2"
-        sha1="1630658fbc2d222b988603c27b4a4249586fbfe7">
-        <dex dex="C:\android_workspace\MyApplication\alcanoid\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-appcompat-v7-25.1.0_815f11fe66743adb277b8c36527c9d93785461ff\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
         jar="C:\android_workspace\MyApplication\alcanoid\build\intermediates\exploded-aar\com.android.support\support-fragment\25.1.0\jars\classes.jar"
         jumboMode="true"
         optimize="true"
         revision="25.0.2"
         sha1="2a53c4f3518116b8c6aee0e477233f0f7da8616f">
         <dex dex="C:\android_workspace\MyApplication\alcanoid\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-fragment-25.1.0_6fcacb5415bcbb23568260f5ddd15d5a518a0bf9\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\android_workspace\MyApplication\alcanoid\build\intermediates\exploded-aar\com.android.support\support-core-utils\25.1.0\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="0a0ef86b7fa568a52bf6214a0326ca1f1d618da7">
+        <dex dex="C:\android_workspace\MyApplication\alcanoid\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-core-utils-25.1.0_4f7c4666008975407178f11a24688866eb6ed673\classes.dex" />
     </item>
     <item
         is-multidex="true"
@@ -90,6 +36,15 @@
         revision="25.0.2"
         sha1="ca3c7aa31e2726a400a6e552b93cb9f63c9a1e6d">
         <dex dex="C:\android_workspace\MyApplication\alcanoid\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-compat-25.1.0_aebb082e8defc03ea2543b83db79abcafb6a8bb7\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\android_workspace\MyApplication\alcanoid\build\intermediates\incremental-classes\debug\instant-run-bootstrap.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="7824cb02c52cf6243168c117b173518166cd4c30">
+        <dex dex="C:\android_workspace\MyApplication\alcanoid\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run-bootstrap_cbe443c6e659f0ec1725a9f913e66bcd2571d137\classes.dex" />
     </item>
     <item
         is-multidex="true"
@@ -126,6 +81,51 @@
         revision="25.0.2"
         sha1="6fb6ac3e8d3b9013819920d9ea11f3803c4c0033">
         <dex dex="C:\android_workspace\MyApplication\alcanoid\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-animated-vector-drawable-25.1.0_88df7bbbfbfbbceaab207f3140cdb875c4013ab8\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\android_workspace\MyApplication\alcanoid\build\intermediates\exploded-aar\com.android.support\recyclerview-v7\25.1.0\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="b266c8faa5af72e579b9da36ef35053ffed6ac64">
+        <dex dex="C:\android_workspace\MyApplication\alcanoid\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-recyclerview-v7-25.1.0_dd219a958b55c46ef9b25d1a2fcbfd97a0636478\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\android_workspace\MyApplication\alcanoid\build\intermediates\exploded-aar\com.android.support\transition\25.1.0\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="d38084015027549951cbaea5d5f6fb795cc81151">
+        <dex dex="C:\android_workspace\MyApplication\alcanoid\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-transition-25.1.0_41a3f9d75bcca9ccf8b748d9b539b9f720be1584\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\samsung\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\25.1.0\support-annotations-25.1.0.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="64cb6b229a8bdfd907bc8dd46839a0053e4c018d">
+        <dex dex="C:\android_workspace\MyApplication\alcanoid\build\intermediates\transforms\dex\debug\folders\1000\10\support-annotations-25.1.0_777c4ac9f76497c03a2c285dd4182d3ed5531a35\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\android_workspace\MyApplication\alcanoid\build\intermediates\incremental-runtime-classes\debug\instant-run.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="169827311cd7803587b550acd027097d60905188">
+        <dex dex="C:\android_workspace\MyApplication\alcanoid\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run_805a5fad233cfa664e9724f1ad17eeefa7e7a449\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\android_workspace\MyApplication\alcanoid\build\intermediates\exploded-aar\com.android.support\appcompat-v7\25.1.0\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="1630658fbc2d222b988603c27b4a4249586fbfe7">
+        <dex dex="C:\android_workspace\MyApplication\alcanoid\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-appcompat-v7-25.1.0_815f11fe66743adb277b8c36527c9d93785461ff\classes.dex" />
     </item>
     <item
         is-multidex="true"
