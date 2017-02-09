@@ -29,10 +29,18 @@ public class GameView extends TextureView implements TextureView.SurfaceTextureL
     private Pad mPad;
     private float mPadHalfWidth;
 
-    //
+    // Ball 생성 및 크기 설정
+    private Ball mBall;
+    private float mBallRadius;
+
+    // 사용자가 touch한 좌표
     volatile private float mTouchedX;
     volatile private float mTouchedY;
 
+    private float mBlockWidth;
+    private float mBlockHeight;
+    static final int BLOCK_COUNT = 100;
+    private int mLife;
 
     public void start(){
         // Runnable 의 run()을 내부클래스로 구현
@@ -43,6 +51,7 @@ public class GameView extends TextureView implements TextureView.SurfaceTextureL
                 paint.setColor(Color.RED);
                 paint.setStyle(Paint.Style.FILL);
                 while (true) {
+                    long startTime = System.currentTimeMillis();
                     // lock 을 주어 동기화를 시켜준다. sync() 의 ()에는 객체가 들어간다.
                     // critical area {}를 벗어나면 자동으로 lock을 반납한다.
                     // 그냥 this만 쓰면 현재 내부클래스 객체인 Runnable에 걸리므로 GameView에 걸어준다.
@@ -58,12 +67,83 @@ public class GameView extends TextureView implements TextureView.SurfaceTextureL
                         float padRight = mTouchedX + mPadHalfWidth;
                         mPad.setLeftRight(padLeft, padRight);
 
+                        mBall.move();
+                        // ball 충돌판정
+                        float ballBottom = mBall.getY() + mBallRadius;
+                        float ballTop = mBall.getY() - mBallRadius;
+                        float ballLeft = mBall.getX() - mBallRadius;
+                        float ballRight = mBall.getX() + mBallRadius;
+                        // 가로방향 벽에 부딪혔을 때
+                        if (ballLeft < 0 && mBall.getSpeedX() < 0
+                                        || ballRight >= getWidth()
+                                        && mBall.getSpeedX() > 0) {
+                            mBall.setSpeedX(-mBall.getSpeedX());
+                        }
+                        if (ballTop > getHeight()) {
+                            if (mLife > 0) {
+                                mLife--;
+                                mBall.reset();
+                            }
+                        }
+                        // block과 충돌판정 처리
+                        Block leftBlock = getBlock(ballLeft, mBall.getY());
+                        Block rightBlock = getBlock(ballRight, mBall.getY());
+                        Block topBlock = getBlock(mBall.getX(), ballTop);
+                        Block bottomBlock = getBlock(mBall.getX(), ballBottom);
+
+                        if (leftBlock != null) {
+                            mBall.setSpeedX(-mBall.getSpeedX());
+                            leftBlock.collision();
+                        }
+                        if (rightBlock != null) {
+                            mBall.setSpeedX(-mBall.getSpeedX());
+                            rightBlock.collision();
+                        }
+                        if (topBlock != null) {
+                            mBall.setSpeedY(-mBall.getSpeedY());
+                            topBlock.collision();
+                        }
+                        if (bottomBlock != null) {
+                            mBall.setSpeedY(-mBall.getSpeedY());
+                            bottomBlock.collision();
+                        }
+                        float padTop = mPad.getTop();
+                        float ballSpeedY = mBall.getSpeedY();
+
+                        if (ballBottom > padTop && ballBottom - ballSpeedY < padTop
+                                && padLeft < ballRight && padRight > ballLeft) {
+                            if (ballSpeedY < mBlockHeight / 3) {
+                                ballSpeedY *= -1.05f;
+                            } else{
+                                ballSpeedY = -ballSpeedY;
+                            }
+                            float ballSpeedX = mBall.getSpeedX() + (mBall.getX() - mTouchedX) / 10;
+                            if (ballSpeedX > mBlockWidth / 5) {
+                                ballSpeedX = mBlockWidth / 5;
+                            }
+                            mBall.setSpeedX(ballSpeedX);
+                            mBall.setSpeedY(ballSpeedY);
+                        }
+
                         // block과 pad 한꺼번에 그리기
                         // mItemList는 100개의 블럭과 1개의 패드를 가지고 있다.
                         for (DrawableItem item : mItemList) {
                             item.draw(canvas, paint);
                         }
                         unlockCanvasAndPost(canvas);
+                    }
+                    /* 기기마다 처리하는 속도가 다르므로 공이 움직이는 속도가 다를 것이다.
+                       따라서 속도를 맞춰주기 위해 우리는 while루프를 1/60초에 한번 실행하도록 하자.
+                       16밀리초는 약 1/60초다.
+                    */
+                    long sleepTime = 16 - (System.currentTimeMillis() - startTime);
+                    // while 루프를 돈 시간이 16밀리초(1/60)초 보다 적게 걸렸으면
+                    if (sleepTime > 0) {
+                        try {
+                            Thread.sleep(sleepTime);
+                        } catch (InterruptedException e) {
+
+                        }
                     }
                 }
             }
@@ -122,22 +202,23 @@ public class GameView extends TextureView implements TextureView.SurfaceTextureL
     // 여기에 들어가는 width, height 는 화면에서 가져오면 된다.
     // 그게 onSurfaceTextureAvailable 일거고 화면이 수정될 경우 onSurfaceTextureSizeChanged 다.\
 
-    // pad 객체도 여기서 같이만들어 주자.
+    // pad와 ball 객체도 여기서 같이만들어 주자.
     public void readyObjects(int width, int height) {
-        // 블럭생성
+        mLife = 5;
 
-        float blockWidth = width/10;
+        // 블럭생성
+        mBlockWidth = width/10;
         // 세로는 화면의 절반이므로 /10와 /2를 해준다.
-        float blockHeight = height/20;
+        mBlockHeight = height/20;
         // mItemList 는 <Block> 리스트다.
-        mItemList = new ArrayList<DrawableItem>();
+        mItemList = new ArrayList<>();
         // 블럭을 그릴때 시작하는 좌표가 필요하다. Canvas.drawRect 메서드의 사용법이다.
-        for (int i = 0; i < 100; i++) { // 100개 그릴꺼니까 for 문으로 100번 반복
+        for (int i = 0; i < BLOCK_COUNT; i++) { // 100개 그릴꺼니까 for 문으로 100번 반복
             // (0,0) (0,1) (0,2) ... (0,10) (1,0) (1,1) 순으로 그린다.
-            float blockTop = i / 10 * blockHeight;
-            float blockLeft = i % 10 * blockWidth;
-            float blockBottom = blockTop + blockHeight;
-            float blockRight = blockLeft + blockWidth;
+            float blockTop = i / 10 * mBlockHeight;
+            float blockLeft = i % 10 * mBlockWidth;
+            float blockBottom = blockTop + mBlockHeight;
+            float blockRight = blockLeft + mBlockWidth;
             mItemList.add(new Block(blockTop, blockLeft, blockBottom, blockRight));
         }
 
@@ -146,5 +227,24 @@ public class GameView extends TextureView implements TextureView.SurfaceTextureL
         mPad = new Pad(height * 0.85f, height * 0.9f);
         mItemList.add(mPad);
         mPadHalfWidth = width / 10;
+
+        // 볼 생성, 크기는 화면의 너비나 높이중 작은쪽의 1/40
+        // 초기 위치는 화면의 중앙
+        mBallRadius = (width > height) ? (height / 40) : (width / 40);
+        mBall = new Ball(mBallRadius, width / 2, height / 1.5f);
+        mItemList.add(mBall);
+    }
+
+    //특정 좌표에있는 블럭을 가져오는 메서드
+    public Block getBlock(float x, float y) {
+        // 블럭을 그렸던 역으로 찾아간다.
+        int index = (int) (x / mBlockWidth) + (int) (y / mBlockHeight) * 10;
+        if (0 <= index && index < BLOCK_COUNT) {
+            Block block = (Block) mItemList.get(index);
+            if (block.iSExist()) {
+                return block;
+            }
+        }
+        return null;
     }
 }

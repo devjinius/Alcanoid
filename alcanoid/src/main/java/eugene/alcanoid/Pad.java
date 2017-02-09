@@ -26,6 +26,10 @@ public class Pad implements DrawableItem {
         mRight = Right;
     }
 
+    public float getTop() {
+        return mTop;
+    }
+
     public void draw(Canvas canvas, Paint paint) {
         paint.setColor(Color.LTGRAY);
         paint.setStyle(Paint.Style.FILL);

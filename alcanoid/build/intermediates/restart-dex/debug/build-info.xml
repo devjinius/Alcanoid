@@ -5,29 +5,29 @@
     density="xxxhdpi"
     format="8"
     plugin-version="2.2.3"
-    timestamp="337999761577609"
+    timestamp="432794531807600"
     token="-2903686404630640642"
     verifier="FULL_BUILD_REQUESTED" >
 
     <task
         name="javac"
-        duration="172" />
+        duration="375" />
     <task
         name="instant-run-dex"
         duration="0" />
     <task
         name="instant-run-transform"
-        duration="78" />
+        duration="46" />
     <task
         name="verifier"
-        duration="16" />
+        duration="15" />
 
     <artifact
         location="C:\android_workspace\MyApplication\alcanoid\build\outputs\apk\alcanoid-debug.apk"
         type="MAIN" />
 
     <build
-        timestamp="337999761577609"
+        timestamp="432794531807600"
         verifier="FULL_BUILD_REQUESTED" >
         <artifact
             location="C:\android_workspace\MyApplication\alcanoid\build\outputs\apk\alcanoid-debug.apk"
