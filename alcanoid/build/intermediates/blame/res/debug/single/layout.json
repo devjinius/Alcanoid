@@ -92,6 +92,10 @@
         "source": "C:\\android_workspace\\MyApplication\\alcanoid\\build\\intermediates\\exploded-aar\\com.android.support\\design\\25.1.0\\res\\layout\\design_layout_snackbar.xml"
     },
     {
+        "merged": "C:\\android_workspace\\MyApplication\\alcanoid\\build\\intermediates\\res\\merged\\debug\\layout\\content_clear.xml",
+        "source": "C:\\android_workspace\\MyApplication\\alcanoid\\src\\main\\res\\layout\\content_clear.xml"
+    },
+    {
         "merged": "C:\\android_workspace\\MyApplication\\alcanoid\\build\\intermediates\\res\\merged\\debug\\layout\\abc_popup_menu_header_item_layout.xml",
         "source": "C:\\android_workspace\\MyApplication\\alcanoid\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\25.1.0\\res\\layout\\abc_popup_menu_header_item_layout.xml"
     },
@@ -146,6 +150,10 @@
     {
         "merged": "C:\\android_workspace\\MyApplication\\alcanoid\\build\\intermediates\\res\\merged\\debug\\layout\\abc_list_menu_item_layout.xml",
         "source": "C:\\android_workspace\\MyApplication\\alcanoid\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\25.1.0\\res\\layout\\abc_list_menu_item_layout.xml"
+    },
+    {
+        "merged": "C:\\android_workspace\\MyApplication\\alcanoid\\build\\intermediates\\res\\merged\\debug\\layout\\activity_clear.xml",
+        "source": "C:\\android_workspace\\MyApplication\\alcanoid\\src\\main\\res\\layout\\activity_clear.xml"
     },
     {
         "merged": "C:\\android_workspace\\MyApplication\\alcanoid\\build\\intermediates\\res\\merged\\debug\\layout\\design_layout_snackbar_include.xml",

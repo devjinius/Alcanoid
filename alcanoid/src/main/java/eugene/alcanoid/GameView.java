@@ -1,15 +1,21 @@
 package eugene.alcanoid;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.SurfaceTexture;
+import android.os.Bundle;
+import android.os.Message;
 import android.view.MotionEvent;
 import android.view.TextureView;
 import android.view.View;
+import android.os.Handler;
 
 import java.util.ArrayList;
+
+import static android.R.id.message;
 
 /**
  * Created by eugene on 2017-02-04.
@@ -24,6 +30,8 @@ public class GameView extends TextureView implements TextureView.SurfaceTextureL
 
     // block을 만들기위한 배열 생성
     private ArrayList<DrawableItem> mItemList;
+    // block 만 관리하는 arraylist 추가 후 clear 판정을 위해 남은 블록의 개수를 세자
+    private ArrayList<Block> mBlockList;
 
     // pad 생성 및 패드의 크기 설정
     private Pad mPad;
@@ -39,8 +47,15 @@ public class GameView extends TextureView implements TextureView.SurfaceTextureL
 
     private float mBlockWidth;
     private float mBlockHeight;
-    static final int BLOCK_COUNT = 100;
+    static final int BLOCK_COUNT = 50;
     private int mLife;
+
+    // 시간을 기록하기 위한 변수 선언
+    private long mGameStartTime;
+
+    // 스레드 처리를 위한 handler 변수 선언
+    private Handler mHandler;
+
 
     public void start(){
         // Runnable 의 run()을 내부클래스로 구현
@@ -79,10 +94,27 @@ public class GameView extends TextureView implements TextureView.SurfaceTextureL
                                         && mBall.getSpeedX() > 0) {
                             mBall.setSpeedX(-mBall.getSpeedX());
                         }
+                        // 공이 바닥으로 떨어짐
                         if (ballTop > getHeight()) {
                             if (mLife > 0) {
+                                // 생명이 남았을 경우 mLife--
                                 mLife--;
                                 mBall.reset();
+                            } else{
+                                // 생명이 안남았는데 죽었을 경우
+                                // message와 bundle을 생성하여 message에 bundle을 넣는다.
+                                unlockCanvasAndPost(canvas);
+                                Message message = Message.obtain();
+                                Bundle bundle = new Bundle();
+                                bundle.putBoolean(ClearActivity.EXTRA_IS_CLEAR, false);
+                                bundle.putInt(ClearActivity.EXTRA_BLOCK_COUNT, getBlockCount());
+                                bundle.putLong(ClearActivity.EXTRA_TIME,
+                                        System.currentTimeMillis()-mGameStartTime);
+                                message.setData(bundle);
+                                // handler를 이용해서 sendMessage한다.
+                                // UI Thread 에서 처리할 수 있게 하는 메서드다.
+                                mHandler.sendMessage(message);
+                                return;
                             }
                         }
                         // block과 충돌판정 처리
@@ -91,21 +123,28 @@ public class GameView extends TextureView implements TextureView.SurfaceTextureL
                         Block topBlock = getBlock(mBall.getX(), ballTop);
                         Block bottomBlock = getBlock(mBall.getX(), ballBottom);
 
+                        //게임 클리어 판정 추가 (공이 블럭에 마지막으로 부딪혀야 끝나니깐!)
+                        boolean isCollision = false; //flag
+
                         if (leftBlock != null) {
                             mBall.setSpeedX(-mBall.getSpeedX());
                             leftBlock.collision();
+                            isCollision = true;
                         }
                         if (rightBlock != null) {
                             mBall.setSpeedX(-mBall.getSpeedX());
                             rightBlock.collision();
+                            isCollision = true;
                         }
                         if (topBlock != null) {
                             mBall.setSpeedY(-mBall.getSpeedY());
                             topBlock.collision();
+                            isCollision = true;
                         }
                         if (bottomBlock != null) {
                             mBall.setSpeedY(-mBall.getSpeedY());
                             bottomBlock.collision();
+                            isCollision = true;
                         }
                         float padTop = mPad.getTop();
                         float ballSpeedY = mBall.getSpeedY();
@@ -131,6 +170,18 @@ public class GameView extends TextureView implements TextureView.SurfaceTextureL
                             item.draw(canvas, paint);
                         }
                         unlockCanvasAndPost(canvas);
+
+                        // lock이 풀린 상태에서 flag가 true이면서 블럭이 남지 않았으면 gameClear
+                        if (isCollision && getBlockCount() == 0) {
+                            Message message = Message.obtain();
+                            Bundle bundle = new Bundle();
+                            bundle.putBoolean(ClearActivity.EXTRA_IS_CLEAR, true);
+                            bundle.putInt(ClearActivity.EXTRA_BLOCK_COUNT, 0);
+                            bundle.putLong(ClearActivity.EXTRA_TIME,
+                                    System.currentTimeMillis() - mGameStartTime);
+                            message.setData(bundle);
+                            mHandler.sendMessage(message);
+                        }
                     }
                     /* 기기마다 처리하는 속도가 다르므로 공이 움직이는 속도가 다를 것이다.
                        따라서 속도를 맞춰주기 위해 우리는 while루프를 1/60초에 한번 실행하도록 하자.
@@ -158,10 +209,22 @@ public class GameView extends TextureView implements TextureView.SurfaceTextureL
     }
 
     //생성자로 부모 생성자 호출
-    public GameView(Context context) {
+    public GameView(final Context context) {
         super(context);
         setSurfaceTextureListener(this);
         setOnTouchListener(this);
+        // new Handler() -> 호출한 Thread에서 실행된다. 따라서 생성자를 호출하는 UI Thread 에서 실행된다.
+        mHandler = new Handler(){
+            @Override
+            public void handleMessage(Message message){
+                //실행할 처리를 override 해서 지정할 수 있다.
+                // context는 GameActivity 에서 this로 호출 했으니 GameActivity의 instance 다.
+                Intent intent = new Intent(context, ClearActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                intent.putExtras(message.getData());
+                context.startActivity(intent);
+            }
+        };
     }
 
     //surfaceTextureView 를 사용할 수 있을 때 호출하는 메서드
@@ -210,8 +273,10 @@ public class GameView extends TextureView implements TextureView.SurfaceTextureL
         mBlockWidth = width/10;
         // 세로는 화면의 절반이므로 /10와 /2를 해준다.
         mBlockHeight = height/20;
-        // mItemList 는 <Block> 리스트다.
+        // mItemList 는 <DrawableItem> 리스트다.
         mItemList = new ArrayList<>();
+        // blockList 초기화
+        mBlockList = new ArrayList<>();
         // 블럭을 그릴때 시작하는 좌표가 필요하다. Canvas.drawRect 메서드의 사용법이다.
         for (int i = 0; i < BLOCK_COUNT; i++) { // 100개 그릴꺼니까 for 문으로 100번 반복
             // (0,0) (0,1) (0,2) ... (0,10) (1,0) (1,1) 순으로 그린다.
@@ -219,8 +284,11 @@ public class GameView extends TextureView implements TextureView.SurfaceTextureL
             float blockLeft = i % 10 * mBlockWidth;
             float blockBottom = blockTop + mBlockHeight;
             float blockRight = blockLeft + mBlockWidth;
-            mItemList.add(new Block(blockTop, blockLeft, blockBottom, blockRight));
+            // mBlockLisg에 저장하고 루프를 빠져나간 뒤
+            mBlockList.add(new Block(blockTop, blockLeft, blockBottom, blockRight));
         }
+        // addAll()을 이용해서 ItemList에 저장한다.
+        mItemList.addAll(mBlockList);
 
         // 패드생성 화면 높이의 아래에서 20% 정도에 위치하고 두께는 0.05
         // 넓이는 화면 크기의 1/5
@@ -233,6 +301,11 @@ public class GameView extends TextureView implements TextureView.SurfaceTextureL
         mBallRadius = (width > height) ? (height / 40) : (width / 40);
         mBall = new Ball(mBallRadius, width / 2, height / 1.5f);
         mItemList.add(mBall);
+        //생명값 초기화
+        mLife = 5;
+        //시간값 초기화
+        mGameStartTime = System.currentTimeMillis();
+
     }
 
     //특정 좌표에있는 블럭을 가져오는 메서드
@@ -246,5 +319,15 @@ public class GameView extends TextureView implements TextureView.SurfaceTextureL
             }
         }
         return null;
+    }
+
+    private int getBlockCount(){
+        int count = 0;
+        for (Block block : mBlockList) {
+            if (block.iSExist()) {
+                count++;
+            }
+        }
+        return count;
     }
 }

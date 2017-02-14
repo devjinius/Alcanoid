@@ -24,6 +24,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="eugene.alcanoid.ClearActivity"
+            android:label="@string/title_activity_clear"
+            android:parentActivityName="eugene.alcanoid.GameActivity"
+            android:theme="@style/AppTheme.NoActionBar" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="eugene.alcanoid.GameActivity" />
+        </activity>
     </application>
 
 </manifest>
