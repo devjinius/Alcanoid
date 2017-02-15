@@ -3,6 +3,7 @@ package eugene.alcanoid;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.Bundle;
 
 /**
  * Created by eugene on 2017-02-09.
@@ -20,11 +21,17 @@ public class Ball implements DrawableItem {
     private final float mInitialSpeedX;
     private final float mInitialSpeedY;
 
+    //bundle에 저장할 키 final로 생성
+    private static final String KEY_X = "x";
+    private static final String KEY_Y = "y";
+    private static final String KEY_SPEED_X = "xSpeed";
+    private static final String KEY_SPEED_Y = "ySpeed";
+
 
     public Ball(float radius, float initialX, float initialY) {
         mRadius = radius;
-        mSpeedX = radius/5;
-        mSpeedY = -radius/5;
+        mSpeedX = radius/3;
+        mSpeedY = -radius/3;
         mX = initialX;
         mY = initialY;
         mInitialX = mX;
@@ -70,10 +77,27 @@ public class Ball implements DrawableItem {
     }
 
     public void reset(){
-
         mX = mInitialX;
         mY = mInitialY;
         mSpeedX = mInitialSpeedX * ((float)Math.random()-0.5f);
         mSpeedY = mInitialSpeedY;
+    }
+
+    // 화면이 바뀔 때 저장하는 메서드
+    public Bundle save(int width, int height) {
+        Bundle bundle = new Bundle();
+        bundle.putFloat(KEY_X, mX / width);
+        bundle.putFloat(KEY_Y, mY / height);
+        bundle.putFloat(KEY_SPEED_X, mSpeedX / width);
+        bundle.putFloat(KEY_SPEED_Y, mSpeedY / height);
+        return bundle;
+    }
+
+    // 화면이 바뀔 때 복원하는 메서드
+    public void restore(Bundle inState, int width, int height) {
+        mX = inState.getFloat(KEY_X) * width;
+        mY = inState.getFloat(KEY_Y) * height;
+        mSpeedX = inState.getFloat(KEY_SPEED_X) * width;
+        mSpeedY = inState.getFloat(KEY_SPEED_Y) * height;
     }
 }

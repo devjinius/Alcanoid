@@ -47,7 +47,7 @@ public class GameView extends TextureView implements TextureView.SurfaceTextureL
 
     private float mBlockWidth;
     private float mBlockHeight;
-    static final int BLOCK_COUNT = 50;
+    static final int BLOCK_COUNT = 10;
     private int mLife;
 
     // 시간을 기록하기 위한 변수 선언
@@ -56,6 +56,15 @@ public class GameView extends TextureView implements TextureView.SurfaceTextureL
     // 스레드 처리를 위한 handler 변수 선언
     private Handler mHandler;
 
+    // 상태를 저장하기 위해 final Stirng 변수 선언
+    private static final String KEY_LIFE = "life";
+    private static final String KEY_GAME_START_TIME = "game_start_time";
+    private static final String KEY_BALL = "ball";
+    private static final String KEY_BLOCK = "block";
+
+    // 저장된 상태를 다루는 변수 선언
+    // 생성시 인수로 받아서 readyObjects에서 상태를 복원
+    private final Bundle mSavedInstanceState;
 
     public void start(){
         // Runnable 의 run()을 내부클래스로 구현
@@ -93,6 +102,10 @@ public class GameView extends TextureView implements TextureView.SurfaceTextureL
                                         || ballRight >= getWidth()
                                         && mBall.getSpeedX() > 0) {
                             mBall.setSpeedX(-mBall.getSpeedX());
+                        }
+                        // 위 벽에 부딪혔을 때
+                        if (ballTop < 0) {
+                            mBall.setSpeedY(-mBall.getSpeedY());
                         }
                         // 공이 바닥으로 떨어짐
                         if (ballTop > getHeight()) {
@@ -209,10 +222,12 @@ public class GameView extends TextureView implements TextureView.SurfaceTextureL
     }
 
     //생성자로 부모 생성자 호출
-    public GameView(final Context context) {
+    public GameView(final Context context, Bundle savedInstanceState) {
         super(context);
         setSurfaceTextureListener(this);
         setOnTouchListener(this);
+        // 인수로 가져온 bundle 추가
+        mSavedInstanceState = savedInstanceState;
         // new Handler() -> 호출한 Thread에서 실행된다. 따라서 생성자를 호출하는 UI Thread 에서 실행된다.
         mHandler = new Handler(){
             @Override
@@ -267,8 +282,8 @@ public class GameView extends TextureView implements TextureView.SurfaceTextureL
 
     // pad와 ball 객체도 여기서 같이만들어 주자.
     public void readyObjects(int width, int height) {
+        // 목숨 5개로 초기값 설정
         mLife = 5;
-
         // 블럭생성
         mBlockWidth = width/10;
         // 세로는 화면의 절반이므로 /10와 /2를 해준다.
@@ -306,6 +321,15 @@ public class GameView extends TextureView implements TextureView.SurfaceTextureL
         //시간값 초기화
         mGameStartTime = System.currentTimeMillis();
 
+        // mSavedInstanceState에 값이 있는 경우 복원화 시켜주고 아니면 초기화
+        if (mSavedInstanceState != null) {
+            mLife = mSavedInstanceState.getInt(KEY_LIFE);
+            mGameStartTime = mSavedInstanceState.getLong(KEY_GAME_START_TIME);
+            mBall.restore(mSavedInstanceState.getBundle(KEY_BALL), width, height);
+            for (int i = 0; i < BLOCK_COUNT; i++) {
+                mBlockList.get(i).restore(mSavedInstanceState.getBundle(KEY_BLOCK + i));
+            }
+        }
     }
 
     //특정 좌표에있는 블럭을 가져오는 메서드
@@ -329,5 +353,17 @@ public class GameView extends TextureView implements TextureView.SurfaceTextureL
             }
         }
         return count;
+    }
+
+    // 값을 저장하는 메서드, 화면이 바뀔 때 사용한다.
+    public void onSaveInstanceState(Bundle outState){
+        outState.putInt(KEY_LIFE, mLife);
+        outState.putLong(KEY_GAME_START_TIME, mGameStartTime);
+        // 공은 save()가 번들은 return 하니까 번들안에 번들을 넣는다
+        outState.putBundle(KEY_BALL, mBall.save(getWidth(), getHeight()));
+        // 블럭은 BLOCK_COUNT 만큼 반복문을 돌려서 mHard 를 검사해야 한다.
+        for (int i = 0; i < BLOCK_COUNT; i++) {
+            outState.putBundle(KEY_BLOCK + i, mBlockList.get(i).save());
+        }
     }
 }
