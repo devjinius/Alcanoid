@@ -1,4 +1,4 @@
-#Wed Feb 15 12:21:56 KST 2017
+#Sat Feb 18 20:20:43 KST 2017
 base.0=C\:\\android_workspace\\MyApplication\\alcanoid\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\10\\instant-run_805a5fad233cfa664e9724f1ad17eeefa7e7a449
 renamed.1=classes.dex
 renamed.0=classes2.dex

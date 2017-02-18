@@ -43,7 +43,7 @@
         jumboMode="true"
         optimize="true"
         revision="25.0.2"
-        sha1="503482784ee1076b8cd4fd1e989fcbfbcb4017ca">
+        sha1="5b6adb71df3d6ba8b8d79388603484b77df7461e">
         <dex dex="C:\android_workspace\MyApplication\alcanoid\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run-bootstrap_cbe443c6e659f0ec1725a9f913e66bcd2571d137\classes.dex" />
     </item>
     <item

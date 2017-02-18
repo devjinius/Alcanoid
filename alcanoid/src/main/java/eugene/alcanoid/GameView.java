@@ -6,8 +6,11 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.SurfaceTexture;
+import android.media.AudioManager;
+import android.media.ToneGenerator;
 import android.os.Bundle;
 import android.os.Message;
+import android.os.Vibrator;
 import android.view.MotionEvent;
 import android.view.TextureView;
 import android.view.View;
@@ -47,7 +50,7 @@ public class GameView extends TextureView implements TextureView.SurfaceTextureL
 
     private float mBlockWidth;
     private float mBlockHeight;
-    static final int BLOCK_COUNT = 10;
+    static final int BLOCK_COUNT = 30;
     private int mLife;
 
     // 시간을 기록하기 위한 변수 선언
@@ -72,8 +75,18 @@ public class GameView extends TextureView implements TextureView.SurfaceTextureL
             @Override
             public void run() {
                 Paint paint = new Paint();
+                // 효과음 생성을 위해 ToneGenerator 생성
+                // 첫번째 인수인 stream_music은 배경음 같은 느낌인듯 * 조사 좀 더해보자.
+                // 두번째 인수는 음량지정인데 단말에 설정된 음량을 최대로 백분율로 지정할 수 있다.
+                ToneGenerator toneGenerator = new ToneGenerator(AudioManager.STREAM_MUSIC,
+                        ToneGenerator.MAX_VOLUME);
                 paint.setColor(Color.RED);
                 paint.setStyle(Paint.Style.FILL);
+                // 블럭 중첩 파괴 시 효과음 레벨을 다르게 하기 위한 변수 두개 선언
+                int collisionTime = 0;
+                int soundIndex = 0;
+                //진동 인스턴스 생성
+                Vibrator vibrator = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
                 while (true) {
                     long startTime = System.currentTimeMillis();
                     // lock 을 주어 동기화를 시켜준다. sync() 의 ()에는 객체가 들어간다.
@@ -101,11 +114,19 @@ public class GameView extends TextureView implements TextureView.SurfaceTextureL
                         if (ballLeft < 0 && mBall.getSpeedX() < 0
                                         || ballRight >= getWidth()
                                         && mBall.getSpeedX() > 0) {
+                            // x축 속도 반대로
                             mBall.setSpeedX(-mBall.getSpeedX());
+                            // 효과음 삽입
+                            toneGenerator.startTone(ToneGenerator.TONE_DTMF_0, 10);
+                            vibrator.vibrate(3);
                         }
                         // 위 벽에 부딪혔을 때
                         if (ballTop < 0) {
+                            // y축 속도 반대로
                             mBall.setSpeedY(-mBall.getSpeedY());
+                            //효과음 삽입
+                            toneGenerator.startTone(ToneGenerator.TONE_DTMF_0, 10);
+                            vibrator.vibrate(3);
                         }
                         // 공이 바닥으로 떨어짐
                         if (ballTop > getHeight()) {
@@ -115,6 +136,7 @@ public class GameView extends TextureView implements TextureView.SurfaceTextureL
                                 mBall.reset();
                             } else{
                                 // 생명이 안남았는데 죽었을 경우
+                                toneGenerator.startTone(ToneGenerator.TONE_CDMA_ALERT_NETWORK_LITE);
                                 // message와 bundle을 생성하여 message에 bundle을 넣는다.
                                 unlockCanvasAndPost(canvas);
                                 Message message = Message.obtain();
@@ -159,11 +181,38 @@ public class GameView extends TextureView implements TextureView.SurfaceTextureL
                             bottomBlock.collision();
                             isCollision = true;
                         }
+
+                        // 블럭 파괴시 효과음 생성
+                        if(isCollision){
+                            // 블럭이 부딪혔을 때
+                            if (collisionTime > 0) {
+                                // 일정 시간 내에 다시 부딪힌 경우 효과음을 수정
+                                if (soundIndex < 15) {
+                                    soundIndex += 3;
+                                }
+                            } else {
+                                // 그렇지 않은 경우 효과음 초기화
+                                soundIndex = 1;
+                            }
+                            collisionTime = 10;
+                            toneGenerator.startTone(soundIndex, 10);
+                            vibrator.vibrate(5);
+                        } else if (collisionTime > 0) {
+                            // 블럭이 안 부딪혔을 때
+                            collisionTime--;
+                        }
+
+
+                        // 패드 충돌 판정
                         float padTop = mPad.getTop();
                         float ballSpeedY = mBall.getSpeedY();
 
                         if (ballBottom > padTop && ballBottom - ballSpeedY < padTop
                                 && padLeft < ballRight && padRight > ballLeft) {
+                            // 패드와 충돌했을 때 효과음
+                            // 첫번째 인수는 전화기 0번 눌렀을 때 나는 소리고 10은 0.01초 재생한다.
+                            toneGenerator.startTone(ToneGenerator.TONE_DTMF_0, 10);
+                            vibrator.vibrate(3);
                             if (ballSpeedY < mBlockHeight / 3) {
                                 ballSpeedY *= -1.05f;
                             } else{
@@ -205,11 +254,11 @@ public class GameView extends TextureView implements TextureView.SurfaceTextureL
                     if (sleepTime > 0) {
                         try {
                             Thread.sleep(sleepTime);
-                        } catch (InterruptedException e) {
-
-                        }
-                    }
-                }
+                        } catch (InterruptedException e) {}
+                    } // if 문 종료
+                } // while 문 종료
+                // while 문 종료 후 릴리즈 한다.
+                toneGenerator.release();
             }
         });
 
